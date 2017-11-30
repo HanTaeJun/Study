@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <!-- 이름을 굳이 길게 지을필요없음. 그냥 구분용으로 패키지처럼 지음 -->
+<mapper namespace="edu.spring.ex02.BoardMapper">
+    <select id="selectAll" resultType="Board"> 
+    	SELECT * FROM ${tblBoard} ORDER BY ${colBno} DESC
+    </select>
+    
+    <insert id="insert">
+    	INSERT INTO ${tblBoard} (${colTitle}, ${colContent}, ${colUserid}, ${colRegdate}, ${colBfile}) 
+    	VALUES(#{title}, #{content}, #{userid}, sysdate, #{bfile})
+    </insert>
+    
+    <update id="update">
+    	UPDATE ${tblBoard} SET ${colTitle} = #{title} , 
+    	${colContent} = #{content} WHERE ${colBno} = #{bno}
+    </update>
+    
+    <delete id="delete">
+    	DELETE FROM ${tblBoard} WHERE ${colBno} = #{bno}
+    </delete>
+    
+    <select id="selectByBno" resultType="Board">
+    	SELECT * FROM ${tblBoard} WHERE ${colBno} = #{bno}
+    </select>
+    
+    <select id="selectByUserid" resultType="Board">
+    	SELECT * FROM ${tblBoard} WHERE ${colUserid} LIKE #{userid} ORDER BY ${colBno} DESC
+    </select>
+    
+    <select id="selectByTitle" resultType="Board">
+    	SELECT * FROM ${tblBoard} WHERE ${colTitle} LIKE #{title} ORDER BY ${colBno} DESC
+    </select>
+    
+    <select id="selectByTitleAndContent" resultType="Board">
+    	SELECT * FROM ${tblBoard} WHERE ${colTitle} LIKE #{title} OR ${colContent} LIKE #{content} ORDER BY ${colBno} DESC
+    </select>
+    
+    
+    <!-- Dynamic SQL -->
+    <!-- MyBatis가 가지고 있는 특징 : 조건에 따라서 SQL 문장을 동적으로 만들어주는 기능 -->
+    <select id="search" resultType="Board">
+    	SELECT * FROM ${tblBoard}
+    	WHERE
+    	<if test="searchType==1"> ${colUserid} LIKE #{searchWord} </if>
+    	<if test="searchType==2"> ${colTitle} LIKE #{searchWord} </if>
+    	<if test="searchType==3"> ${colTitle} LIKE #{searchWord} OR ${colContent} LIKE #{searchWord} </if>
+    	ORDER BY ${colBno} DESC
+    </select>
+    
+    <select id="search2" resultType="Board">
+    	SELECT * FROM ${tblBoard}
+    	WHERE
+    	<choose>
+    		<when test="searchType==1"> ${colUserid} LIKE #{searchWord} </when>
+    		<when test="searchType==2"> ${colTitle} LIKE #{searchWord} </when>
+    		<when test="searchType==3"> ${colTitle} LIKE #{searchWord} OR ${colContent} LIKE #{searchWord} </when>
+    	</choose>
+    	ORDER BY ${colBno} DESC
+    </select>
+    
+    
+    <!-- 페이지 처리를 위한 SQL 문장들 -->
+    <!-- Board 테이블의 전체 데이터 갯수 -->
+    <select id="totalCount" resultType="Integer">
+    	select count (${colBno}) cnt from ${tblBoard}
+    </select>
+    
+    <!-- 한 페이지에 보여줄 게시글만 검색 -->
+    <select id="selectPage" resultType="Board">
+	    select b.bno, b.title, b.content, b.userid, b.regdate, b.REPLYCNT, b.BFILE 
+	    from (
+	        select rownum rn, a.*
+	        from (
+	            select * from ${tblBoard} order by ${colBno} desc
+	        ) a
+	    ) b
+	    where rn between #{start} and #{end}
+    </select>
+    
+    <!-- 씨발!! 리절트타입 원이다 -->
+    <select id="searchWord" resultType="Board">
+    	select b.bno, b.title, b.content, b.userid, b.regdate
+		from ( 
+		select rownum rn , a.*from ( 
+		SELECT * FROM ${tblBoard} WHERE ${colUserid} LIKE #{searchWord} ORDER BY ${colBno} DESC ) a ) b
+		where rn between #{start} and #{end}
+    </select>
+    
+    <!-- 씨빠라라 -->
+    <select id="searchCount" resultType="Integer">
+    	select count (${colBno}) tle from ${tblBoard} where ${colUserid} like #{searchWord}
+    </select>
+    
+    <!-- 2222222222 -->
+    <select id="searchWord2" resultType="Board">
+    	select b.bno, b.title, b.content, b.userid, b.regdate
+		from ( 
+		select rownum rn , a.*from ( 
+		SELECT * FROM ${tblBoard} WHERE ${colTitle} LIKE #{searchWord} ORDER BY ${colBno} DESC ) a ) b
+		where rn between #{start} and #{end}
+    </select>
+    
+    <!-- 2222222222 -->
+    <select id="searchCount2" resultType="Integer">
+    	select count (${colBno}) tle from ${tblBoard} where ${colTitle} like #{searchWord}   
+    </select>
+    
+    <!-- 3333333333 -->
+    <select id="searchWord3" resultType="Board">
+    	select b.bno, b.title, b.content, b.userid, b.regdate
+		from ( 
+		select rownum rn , a.*from ( 
+		SELECT * FROM ${tblBoard} 
+		
+		WHERE ${colTitle} LIKE #{searchWord} or ${colContent} LIKE #{searchWord} 
+		
+		ORDER BY ${colBno} DESC ) a ) b
+		where rn between #{start} and #{end}
+    </select>
+    
+    <!-- 33333333333 -->
+    <select id="searchCount3" resultType="Integer">
+    	select count (${colBno}) tle from ${tblBoard} where ${colTitle} like #{searchWord} or ${colContent} like #{searchWoard}  
+    </select>
+    
+    
+</mapper>

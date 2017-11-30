@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+		<!-- Board -->
+		<property name="tblBoard" value="JUN_BOARD"/>
+		<property name="colBno" value="bno"/>
+		<property name="colTitle" value="title"/>
+		<property name="colContent" value="content"/>
+		<property name="colUserid" value="userid"/>
+		<property name="colRegdate" value="regdate"/>
+		<property name="colReplycnt" value="replycnt"/>
+		<property name="colBfile" value="bfile"/>
+		
+		<!-- Member -->
+		<property name="tblMember" value="JUN_MEMBER"/>
+		<property name="colId" value="mid"/>
+		<property name="colPwd" value="passwd"/>
+		<property name="colEmail" value="email"/>
+		
+	</properties>
+	
+	<typeAliases>
+		<package name="edu.spring.ex02.domain"/>
+	</typeAliases>
+	
+</configuration>

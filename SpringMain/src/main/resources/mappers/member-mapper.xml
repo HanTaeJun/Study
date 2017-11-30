@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <!-- 이름을 굳이 길게 지을필요없음. 그냥 구분용으로 패키지처럼 지음 -->
+<mapper namespace="edu.spring.ex02.MemberMapper">
+	
+	<insert id="insert">
+		INSERT INTO ${tblMember} (${colId}, ${colPwd}, ${colEmail}) VALUES (#{mid},#{pwd},#{email})
+	</insert>
+	
+	<select id="login" resultType="Member">
+		SELECT * FROM ${tblMember} where ${colId} = #{mid} AND ${colPwd} = #{pwd}
+	</select>
+	
+	<select id="idCheck" resultType="Member">
+		SELECT * FROM ${tblMember} where ${colId} = #{mid}
+	</select>
+	
+	<select id="selectAll" resultType="Member">
+		SELECT * FROM ${tblMember} ORDER BY ${colId} DESC
+	</select>
+	
+	<select id="searchId" resultType="Member">
+		SELECT * FROM ${tblMember} WHERE ${colEmail} = #{email}
+	</select>
+	
+	<select id="searchPw" resultType="Member">
+		SELECT * FROM ${tblMember} WHERE ${colId} = #{mid} AND ${colEmail} = #{email}
+	</select>
+	
+	<update id="update">
+		UPDATE ${tblMember} SET ${colEmail} = #{email}, ${colPwd} = #{pwd} WHERE ${colId} = #{mid}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM ${tblMember} WHERE ${colId} = #{mid} AND ${colPwd} = #{pwd} AND ${colEmail} = #{email}
+	</delete>
+
+	
+    
+</mapper>
